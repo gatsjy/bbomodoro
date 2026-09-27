@@ -7,6 +7,15 @@ Pick 1, 2, or 3 hours and the pale tomato **turns red one pixel at a time** unti
 - **Windows and macOS**: one codebase ([Neutralinojs](https://neutralino.js.org))
 - **Offline**: no network needed, and all data is stored on your own computer
 
+## ⬇️ Download
+
+| OS | File | Size |
+|---|---|---|
+| Windows 10/11 | [**Bbomodoro-Windows.exe**](https://github.com/gatsjy/bbomodoro/releases/latest/download/Bbomodoro-Windows.exe) | 2.4MB |
+| macOS (Intel · Apple Silicon) | [**Bbomodoro-macOS.tar.gz**](https://github.com/gatsjy/bbomodoro/releases/latest/download/Bbomodoro-macOS.tar.gz) | 1.8MB |
+
+All versions are on the [Releases](https://github.com/gatsjy/bbomodoro/releases) page. If you see a security warning on first launch, see [Running it](#running-it).
+
 ---
 
 ## Features
