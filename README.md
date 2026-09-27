@@ -1,124 +1,124 @@
 # 🍅 Bbomodoro
 
-A pixel tomato focus timer with a retro-game look.
-Pick 1, 2, or 3 hours and the pale tomato **turns red one pixel at a time** until it is fully ripe when your time is up.
+레트로 게임 감성의 픽셀 토마토 집중 타이머예요.
+1·2·3시간 중 목표를 고르면, 흐릿한 토마토가 **한 픽셀씩 빨갛게 익어가서** 목표 시간이 되면 완전히 익어요.
 
-- **Lightweight**: Windows exe **2.4MB**, macOS app **about 1.8MB** compressed (it uses the OS's built-in webview, no Electron)
-- **Windows and macOS**: one codebase ([Neutralinojs](https://neutralino.js.org))
-- **Offline**: no network needed, and all data is stored on your own computer
+- **가벼움**: Windows exe **2.4MB**, macOS 앱 압축 **약 1.8MB** (Electron 없이 OS 내장 웹뷰 사용)
+- **Windows·macOS 지원**: 코드 하나로 두 OS 모두 지원 ([Neutralinojs](https://neutralino.js.org))
+- **오프라인**: 인터넷 연결 없이 동작하고, 모든 데이터는 내 컴퓨터에만 저장돼요
 
-## ⬇️ Download
+## ⬇️ 다운로드
 
-| OS | File | Size |
+| OS | 파일 | 크기 |
 |---|---|---|
 | Windows 10/11 | [**Bbomodoro-Windows.exe**](https://github.com/gatsjy/bbomodoro/releases/latest/download/Bbomodoro-Windows.exe) | 2.4MB |
 | macOS (Intel · Apple Silicon) | [**Bbomodoro-macOS.tar.gz**](https://github.com/gatsjy/bbomodoro/releases/latest/download/Bbomodoro-macOS.tar.gz) | 1.8MB |
 
-All versions are on the [Releases](https://github.com/gatsjy/bbomodoro/releases) page. If you see a security warning on first launch, see [Running it](#running-it).
+전체 버전은 [Releases](https://github.com/gatsjy/bbomodoro/releases) 페이지에 있어요. 처음 실행할 때 보안 경고가 뜨면 [실행 방법](#실행-방법)을 참고하세요.
 
 ---
 
-## Features
+## 기능
 
-### 1. Choose 1, 2, or 3 hours
-- Choose your goal with the `1H` / `2H` / `3H` buttons.
-- While the timer runs (or is paused), the goal is **LOCKED** so it can't change by accident. Press RESET to change it.
+### 1. 1·2·3시간 목표 선택
+- `1H` / `2H` / `3H` 버튼으로 목표 시간을 골라요.
+- 타이머가 돌거나 일시정지된 동안에는 실수로 바뀌지 않도록 목표가 **잠겨요(LOCKED)**. 바꾸려면 RESET을 누르세요.
 
-### 2. Pixel tomato that ripens over time
-- The tomato is made of **670 pixels**. Pixels turn from pale to red one by one **from the bottom up**, as if the tomato were ripening.
-  - Examples: 1 hour ≈ one pixel every 5.4s, 3 hours ≈ one pixel every 16s
-- Each newly colored pixel **flashes gold and white**.
-- The status line shows the colored pixel count and the percentage (`342/670 PX 51%`).
-- The tomato's expression changes with its state:
+### 2. 시간이 지날수록 익어가는 픽셀 토마토
+- 토마토는 **670개의 픽셀**로 되어 있어요. 토마토가 익듯이 **아래쪽부터** 한 픽셀씩 흐린 색에서 빨간색으로 바뀌어요.
+  - 예: 1시간이면 약 5.4초에 한 픽셀, 3시간이면 약 16초에 한 픽셀
+- 새로 칠해지는 픽셀은 **금색·흰색으로 반짝여요**.
+- 상태 줄에 칠해진 픽셀 수와 퍼센트가 표시돼요 (`342/670 PX 51%`).
+- 상태에 따라 토마토 표정이 바뀌어요:
 
-| State | Expression / effect |
+| 상태 | 표정 / 효과 |
 |---|---|
-| Waiting | Blinks now and then, "HI!" speech bubble |
-| Focusing | Bounces up and down, blinks |
-| Paused | Eyes closed, sleeping with 💤 ZZZ |
-| Left the window in focus mode | Sad face + 💧 sweat drop, "COME BACK!" |
-| Done | ^ ^ smiling eyes + 👑 crown + sparkles |
-| Clicking the tomato | Hops and says something ("HEHE", "FOCUS!"...) |
+| 대기 | 가끔 눈을 깜빡이고 "HI!" 말풍선 |
+| 집중 중 | 통통 튀면서 눈 깜빡임 |
+| 일시정지 | 눈을 감고 💤 ZZZ 쿨쿨 |
+| 집중 모드에서 창을 벗어남 | 울상 + 💧 땀방울, "COME BACK!" |
+| 완료 | ^ ^ 웃는 눈 + 👑 왕관 + 반짝이 |
+| 토마토 클릭 | 폴짝 뛰면서 한마디 ("HEHE", "FOCUS!"...) |
 
-### 3. Hourly checkpoints
-- Small tomato slots appear at the top, one per goal hour (up to 3).
-- Every hour, a slot **pops and gets a ✔ check**, with a sound effect and an OS notification.
-- The progress bar is also divided into hour sections.
+### 3. 1시간마다 체크
+- 위쪽에 목표 시간만큼(최대 3개) 작은 토마토 칸이 표시돼요.
+- 1시간이 지날 때마다 칸이 **톡 튀어오르며 ✔ 체크**되고, 효과음과 OS 알림이 나와요.
+- 진행 바도 시간 단위로 칸이 나뉘어 있어요.
 
-### 4. Completion animation (STAGE CLEAR!)
-When the goal time is up:
-1. The screen flashes white
-2. The tomato does **3 victory hops**
-3. A **STAGE CLEAR!** banner slides in and blinks
-4. **Fireworks** burst all over the screen, and confetti falls
-5. A **👑 crown** drops onto the tomato's head (it stays until you reset)
-6. A victory tune plays and an OS notification appears
+### 4. 완료 애니메이션 (STAGE CLEAR!)
+목표 시간이 다 채워지면:
+1. 화면이 하얗게 번쩍
+2. 토마토가 **승리 점프 3번**
+3. **STAGE CLEAR!** 배너가 미끄러져 들어와 깜빡임
+4. 화면 곳곳에 **불꽃놀이**가 터지고 색종이가 떨어짐
+5. 토마토 머리 위로 **👑 왕관**이 떨어짐 (리셋할 때까지 유지)
+6. 승리 음악과 OS 알림
 
-### 5. Goal setting
-- Click the ✏️ box at the top (or press `G`) and enter **today's goal** (e.g. memorize 100 English words).
-- When the timer finishes, the goal gets a **✔ and a strikethrough** and is saved to the record list.
+### 5. 목표 세우기
+- 위쪽 ✏️ 칸을 클릭하거나 `G`를 눌러 **오늘의 목표**를 적어요 (예: 영어 단어 100개 외우기).
+- 타이머가 끝나면 목표에 **✔와 취소선**이 표시되고, 기록 목록에 저장돼요.
 
-### 6. Daily streak
-- A day counts as attended once you **complete at least one hour of focus** that day.
-- The top left shows 🔥 **N days in a row**. The first hour of the day plays a special streak sound and notification.
-- If you haven't attended today yet, a red line blinks under the flame, but **the streak holds as long as yesterday was attended**.
+### 6. 연속 출석
+- 그날 **1시간 이상 집중을 완료**하면 출석으로 쳐요.
+- 왼쪽 위에 🔥 **N일 연속**이 표시돼요. 그날 첫 1시간을 채우면 특별한 효과음과 알림이 나와요.
+- 오늘 아직 출석하지 않았으면 불꽃 아래 빨간 줄이 깜빡이지만, **어제 출석했다면 연속 기록은 유지돼요**.
 
-### 7. Record screen (📅 calendar icon or `C`)
-- **Current streak / best streak / total focus hours**
-- **28-day stamp calendar**: the more hours focused that day, the deeper the red (1H → 2H → 3H+)
-- **Completed goals list**: date, hours, goal, and how many times you left the window (**👑** if you never left)
+### 7. 기록 화면 (📅 달력 아이콘 또는 `C`)
+- **현재 연속 출석 / 최고 기록 / 총 집중 시간**
+- **28일 도장 달력**: 그날 집중한 시간이 많을수록 진한 빨간색 (1H → 2H → 3H 이상)
+- **달성한 목표 목록**: 날짜, 시간, 목표, 창을 벗어난 횟수 (한 번도 안 벗어나면 **👑**)
 
-### 8. Do-not-disturb (focus) mode 🌙
-- Turn it on or off with the moon icon at the top (or `F`). **On by default.**
-- While the timer runs:
-  - The window switches to **fullscreen + always on top**, covering other windows
-  - If you switch to another window, it counts as a **distraction**: the tomato sulks with a warning sound, and **after 5 seconds the window comes back to the front**
-  - The distraction count is saved to the record
-- It turns off automatically when you pause or finish, and you can get out right away with `ESC`.
-- ⚠️ This does **not** automatically turn on the OS's own notification blocking (Windows "Focus assist" / macOS "Focus"). Toggling OS settings from an app without permission is intrusive, so it was left out. Turning that on as well gives you complete do-not-disturb.
+### 8. 방해금지(집중) 모드 🌙
+- 위쪽 달 아이콘이나 `F`로 켜고 꺼요. **기본으로 켜져 있어요.**
+- 타이머가 도는 동안:
+  - 창이 **전체화면 + 항상 위**로 바뀌어 다른 창을 가려요
+  - 다른 창으로 넘어가면 **딴짓**으로 기록돼요. 경고음과 함께 토마토가 시무룩해지고, **5초 뒤 창이 다시 앞으로 나와요**
+  - 딴짓 횟수는 기록에 저장돼요
+- 일시정지하거나 완료하면 자동으로 꺼지고, `ESC`로 바로 빠져나올 수 있어요.
+- ⚠️ OS 자체의 알림 차단(Windows "집중 지원" / macOS "집중 모드")을 자동으로 켜지는 **않아요**. 앱이 허락 없이 OS 설정을 바꾸는 건 적절하지 않아서 넣지 않았어요. OS 설정도 함께 켜면 완벽한 방해금지가 돼요.
 
-### 9. Other features
-- **📌 Always on top**: pin icon at the top right (or `P`); the timer stays in front even outside focus mode
-- **🔈 Sound on/off**: speaker icon (or `M`); 8-bit square-wave sound effects
-- **Keeps going after closing**: time is calculated from timestamps, so if you close and reopen the app, your progress carries on as if it never stopped
-- **Safe reset**: press RESET once to see "OK?", and press again within 2 seconds to reset
-- **Resizable window**: art pixels always scale by integer multiples, so the pixels stay crisp at any display scaling (125%, 150%, Retina)
+### 9. 그 밖의 기능
+- **📌 항상 위**: 오른쪽 위 핀 아이콘 (또는 `P`). 집중 모드가 아닐 때도 타이머를 맨 앞에 띄워둬요
+- **🔈 소리 켜기/끄기**: 스피커 아이콘 (또는 `M`). 8비트 사각파 효과음
+- **닫아도 이어짐**: 시간을 타임스탬프로 계산해서, 앱을 닫았다 다시 켜도 멈춘 적 없는 것처럼 진행이 이어져요
+- **안전한 리셋**: RESET을 한 번 누르면 "OK?"가 뜨고, 2초 안에 한 번 더 눌러야 리셋돼요
+- **창 크기 조절**: 픽셀을 항상 정수 배로만 키워서 디스플레이 배율(125%, 150%, 레티나)과 상관없이 선명해요
 
-### Keyboard shortcuts
+### 단축키
 
-| Key | Action |
+| 키 | 동작 |
 |---|---|
-| `Space` / `Enter` | Start / pause / again |
-| `1` `2` `3` | Choose 1, 2, or 3 hours |
-| `R` | Reset (press twice) |
-| `G` | Enter a goal |
-| `C` | Open / close the record screen |
-| `F` | Focus mode on/off |
-| `ESC` | Exit focus mode |
-| `P` | Always on top |
-| `M` | Sound on/off |
+| `Space` / `Enter` | 시작 / 일시정지 / 다시 하기 |
+| `1` `2` `3` | 1·2·3시간 선택 |
+| `R` | 리셋 (두 번 누르기) |
+| `G` | 목표 입력 |
+| `C` | 기록 화면 열기/닫기 |
+| `F` | 집중 모드 켜기/끄기 |
+| `ESC` | 집중 모드 나가기 |
+| `P` | 항상 위 |
+| `M` | 소리 켜기/끄기 |
 
 ---
 
-## Running it
+## 실행 방법
 
 ### Windows
-Double-click `release/Bbomodoro-Windows.exe`.
-> If a "Windows protected your PC" (SmartScreen) prompt appears, click **More info → Run anyway**. (It shows up because the app isn't code-signed.)
-> Windows 10/11 ships with WebView2, so there's nothing extra to install.
+`Bbomodoro-Windows.exe`를 더블클릭하세요. 설치 과정은 없어요.
+> "Windows의 PC 보호"(SmartScreen) 창이 뜨면 **추가 정보 → 실행**을 누르세요. (코드 서명이 없는 앱이라 뜨는 경고예요.)
+> Windows 10/11에는 WebView2가 기본으로 들어 있어서 따로 설치할 게 없어요.
 
-### macOS (Intel and Apple Silicon)
-1. Double-click `release/Bbomodoro-macOS.tar.gz` to extract `Bbomodoro.app`
-2. Move it to the Applications folder
-3. On first launch, **right-click → Open** (it's unsigned, so it's blocked if you just double-click)
-   - If it says the app is "damaged", run this once in Terminal:
+### macOS (Intel · Apple Silicon)
+1. `Bbomodoro-macOS.tar.gz`를 더블클릭해서 `Bbomodoro.app`을 꺼내요
+2. 응용 프로그램(Applications) 폴더로 옮겨요
+3. 처음 실행할 때는 **우클릭 → 열기**를 눌러요 (서명이 없는 앱이라 그냥 더블클릭하면 막혀요)
+   - "손상되었습니다"라고 나오면 터미널에서 아래 명령을 한 번 실행하세요:
      ```bash
      xattr -cr /Applications/Bbomodoro.app
      ```
 
 ---
 
-## Development
+## 개발
 
 ```bash
 npm install
@@ -127,31 +127,31 @@ npm install
 ```bash
 npm run setup
 ```
-(`setup` downloads the Neutralino runtime into `bin/` and `resources/js/neutralino.js`.)
+(`setup`은 Neutralino 런타임을 `bin/`과 `resources/js/neutralino.js`에 내려받아요.)
 
-| Command | Description |
+| 명령 | 설명 |
 |---|---|
-| `npm start` | Run in development mode |
-| `npm run build` | Generate `release/Bbomodoro-Windows.exe` and `release/Bbomodoro-macOS.tar.gz` |
-| `npm run icon` | Regenerate the app icon (`resources/icons/appIcon.png`) from the sprite |
+| `npm start` | 개발 모드로 실행 |
+| `npm run build` | `release/Bbomodoro-Windows.exe`와 `release/Bbomodoro-macOS.tar.gz` 생성 |
+| `npm run icon` | 스프라이트로 앱 아이콘(`resources/icons/appIcon.png`) 다시 생성 |
 
-You can also build the macOS package from Windows (a tar.gz that keeps the execute permission).
-You can also open `resources/index.html` directly in a browser (no notifications or always-on-top).
+Windows에서도 macOS 패키지를 빌드할 수 있어요 (실행 권한이 유지되는 tar.gz로 만들어요).
+`resources/index.html`을 브라우저에서 바로 열어도 동작해요 (알림과 항상 위 기능은 빠져요).
 
-### Structure
+### 구조
 ```
 resources/
-  index.html        canvas + Korean overlays (goal box, record screen)
-  js/sprite.js      tomato pixel sprite, expressions, ripening order (shared by the app and the icon generator)
-  js/app.js         timer, rendering, 5x7 pixel font, sound, streak, focus mode
+  index.html        캔버스 + 한글 오버레이 (목표 칸, 기록 화면)
+  js/sprite.js      토마토 픽셀 스프라이트, 표정, 익는 순서 (앱과 아이콘 생성기가 함께 사용)
+  js/app.js         타이머, 렌더링, 5x7 픽셀 폰트, 효과음, 연속 출석, 집중 모드
 tools/
-  make-icon.js      renders the sprite to PNG (no dependencies)
-  package.js        builds the release artifacts
+  make-icon.js      스프라이트를 PNG로 렌더링 (의존성 없음)
+  package.js        릴리스 파일 빌드
 neutralino.config.json
 ```
 
-### Data storage
-All data is kept in the app's local storage (`localStorage`, key `bbomodoro.v1`).
-- `days`: hours completed per date → basis for streak and calendar
-- `log`: completed goals (up to 200)
-- `goal`, `acc`, `startedAt`: current timer state
+### 데이터 저장
+모든 데이터는 앱의 로컬 저장소(`localStorage`, 키 `bbomodoro.v1`)에 저장돼요.
+- `days`: 날짜별 완료한 시간 → 연속 출석과 달력의 기준
+- `log`: 달성한 목표 (최대 200개)
+- `goal`, `acc`, `startedAt`: 현재 타이머 상태
