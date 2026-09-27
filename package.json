@@ -1,0 +1,15 @@
+{
+  "name": "bbomodoro",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Retro pixel tomato focus timer (1/2/3 hours)",
+  "scripts": {
+    "setup": "neu update",
+    "icon": "node tools/make-icon.js",
+    "start": "neu run",
+    "build": "node tools/package.js"
+  },
+  "devDependencies": {
+    "@neutralinojs/neu": "^11.7.2"
+  }
+}

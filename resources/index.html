@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bbomodoro</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #fdf0d5; overflow: hidden; }
+    body {
+      user-select: none; -webkit-user-select: none;
+      font-family: "DungGeunMo", "NeoDunggeunmo", "Galmuri11", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      color: #3b1424;
+    }
+    body.focus { background: #f8e2bd; }
+    #stage { position: absolute; }
+    #screen { display: block; cursor: pointer; image-rendering: pixelated; }
+
+    /* goal text sits inside the pixel box drawn at (8,17) 128x14 on the canvas */
+    .u { position: absolute; box-sizing: border-box; }
+    #taskText, #taskInput {
+      left: calc(var(--s) * 21px); top: calc(var(--s) * 18px);
+      width: calc(var(--s) * 112px); height: calc(var(--s) * 12px);
+      font-size: calc(var(--s) * 6.5px); line-height: calc(var(--s) * 12px);
+      font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      pointer-events: none;
+    }
+    #taskText.empty { color: #b58b7a; font-weight: 400; }
+    #taskText.cleared { text-decoration: line-through; text-decoration-thickness: calc(var(--s) * 1px); color: #a3203a; }
+    #taskInput {
+      pointer-events: auto; border: 0; outline: 0; padding: 0; margin: 0;
+      background: #fff8ea; color: #3b1424; font-family: inherit; user-select: text; -webkit-user-select: text;
+    }
+
+    /* record panel */
+    #record {
+      position: absolute; inset: 0; background: rgba(59, 20, 36, .35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: calc(var(--s) * 6px);
+    }
+    #record[hidden] { display: none; }
+    .panel {
+      width: calc(var(--s) * 124px); max-height: calc(var(--s) * 196px);
+      background: #fff8ea; padding: calc(var(--s) * 6px); box-sizing: border-box;
+      display: flex; flex-direction: column; gap: calc(var(--s) * 4px);
+      box-shadow:
+        0 0 0 calc(var(--s) * 1px) #3b1424,
+        calc(var(--s) * 2px) calc(var(--s) * 2px) 0 calc(var(--s) * 1px) #3b1424;
+    }
+    .panel h2 { margin: 0; font-size: calc(var(--s) * 8px); text-align: center; letter-spacing: .05em; }
+    .stats { display: flex; justify-content: space-between; text-align: center; }
+    .stats div { flex: 1; }
+    .stats b { display: block; font-size: calc(var(--s) * 10px); color: #e8434f; }
+    #rGrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: calc(var(--s) * 2px); }
+    #rGrid i { font-style: normal; text-align: center; color: #b58b7a; font-size: calc(var(--s) * 5px); }
+    #rGrid span {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      font-size: calc(var(--s) * 4.5px); color: #b58b7a; background: #eadbc6;
+    }
+    #rGrid span.lv1 { background: #ffb3a8; color: #3b1424; }
+    #rGrid span.lv2 { background: #e8434f; color: #fff8ea; }
+    #rGrid span.lv3 { background: #a3203a; color: #fff8ea; }
+    #rGrid span.today { box-shadow: 0 0 0 calc(var(--s) * 1px) #3b1424; }
+    .sub { font-weight: 700; border-top: calc(var(--s) * 1px) dashed #b58b7a; padding-top: calc(var(--s) * 3px); }
+    #rLog { list-style: none; margin: 0; padding: 0; overflow-y: auto; min-height: calc(var(--s) * 20px); flex: 1; }
+    #rLog li { padding: calc(var(--s) * 1px) 0; word-break: break-all; }
+    #rLog li b { color: #e8434f; }
+    #rLog li.none { color: #b58b7a; }
+    #rClose {
+      font: inherit; font-weight: 700; cursor: pointer; border: 0; color: #fff8ea; background: #e8434f;
+      padding: calc(var(--s) * 2px); box-shadow: 0 0 0 calc(var(--s) * 1px) #3b1424;
+    }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <canvas id="screen"></canvas>
+    <div id="taskText" class="u"></div>
+    <input id="taskInput" class="u" maxlength="40" placeholder="예) 영어 단어 100개 외우기" hidden>
+    <div id="record" hidden>
+      <div class="panel">
+        <h2>🍅 기록</h2>
+        <div class="stats">
+          <div>연속 출석<b id="rStreak">0</b>일</div>
+          <div>최고 기록<b id="rBest">0</b>일</div>
+          <div>총 집중<b id="rTotal">0</b>시간</div>
+        </div>
+        <div id="rGrid"></div>
+        <div class="sub">달성한 목표</div>
+        <ul id="rLog"></ul>
+        <button id="rClose">닫기</button>
+      </div>
+    </div>
+  </div>
+  <script src="js/neutralino.js"></script>
+  <script src="js/sprite.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+bin/
+.tmp/
+.storage/
+neutralinojs.log
+release/
+.claude/
