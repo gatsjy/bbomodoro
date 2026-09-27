@@ -3,7 +3,7 @@
 레트로 게임 감성의 픽셀 토마토 집중 타이머예요.
 1·2·3시간 중 목표를 고르면, 흐릿한 토마토가 **한 픽셀씩 빨갛게 익어가서** 목표 시간이 되면 완전히 익어요.
 
-- **가벼움**: Windows exe **2.4MB**, macOS 앱 압축 **약 1.8MB** (Electron 없이 OS 내장 웹뷰 사용)
+- **가벼움**: Windows exe **2.8MB**, macOS 앱 압축 **약 2.2MB** (Electron 없이 OS 내장 웹뷰 사용)
 - **Windows·macOS 지원**: 코드 하나로 두 OS 모두 지원 ([Neutralinojs](https://neutralino.js.org))
 - **오프라인**: 인터넷 연결 없이 동작하고, 모든 데이터는 내 컴퓨터에만 저장돼요
 
@@ -11,8 +11,8 @@
 
 | OS | 파일 | 크기 |
 |---|---|---|
-| Windows 10/11 | [**Bbomodoro-Windows.exe**](https://github.com/gatsjy/bbomodoro/releases/latest/download/Bbomodoro-Windows.exe) | 2.4MB |
-| macOS (Intel · Apple Silicon) | [**Bbomodoro-macOS.tar.gz**](https://github.com/gatsjy/bbomodoro/releases/latest/download/Bbomodoro-macOS.tar.gz) | 1.8MB |
+| Windows 10/11 | [**Bbomodoro-Windows.exe**](https://github.com/gatsjy/bbomodoro/releases/latest/download/Bbomodoro-Windows.exe) | 2.8MB |
+| macOS (Intel · Apple Silicon) | [**Bbomodoro-macOS.tar.gz**](https://github.com/gatsjy/bbomodoro/releases/latest/download/Bbomodoro-macOS.tar.gz) | 2.2MB |
 
 전체 버전은 [Releases](https://github.com/gatsjy/bbomodoro/releases) 페이지에 있어요. 처음 실행할 때 보안 경고가 뜨면 [실행 방법](#실행-방법)을 참고하세요.
 
@@ -141,14 +141,20 @@ Windows에서도 macOS 패키지를 빌드할 수 있어요 (실행 권한이 �
 ### 구조
 ```
 resources/
-  index.html        캔버스 + 한글 오버레이 (목표 칸, 기록 화면)
+  index.html        캔버스 + 목표 입력칸, 기록 화면
+  fonts/            Galmuri9 픽셀 글꼴 + 라이선스
   js/sprite.js      토마토 픽셀 스프라이트, 표정, 익는 순서 (앱과 아이콘 생성기가 함께 사용)
-  js/app.js         타이머, 렌더링, 5x7 픽셀 폰트, 효과음, 연속 출석, 집중 모드
+  js/app.js         타이머, 렌더링, 픽셀 글자 렌더러, 효과음, 연속 출석, 집중 모드
 tools/
   make-icon.js      스프라이트를 PNG로 렌더링 (의존성 없음)
   package.js        릴리스 파일 빌드
 neutralino.config.json
 ```
+
+### 글꼴
+앱 안의 모든 글자(한글·영문)는 픽셀 글꼴 [갈무리(Galmuri)](https://galmuri.quiple.dev)의 **Galmuri9** 하나로 통일했어요.
+원래 크기(10px)로 그려서 글자 픽셀이 토마토 픽셀과 같은 격자에 딱 맞아요.
+글꼴 저작권은 이민서(quiple)에게 있고 [SIL Open Font License 1.1](resources/fonts/Galmuri-OFL.md)로 배포돼요.
 
 ### 데이터 저장
 모든 데이터는 앱의 로컬 저장소(`localStorage`, 키 `bbomodoro.v1`)에 저장돼요.

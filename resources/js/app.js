@@ -11,39 +11,6 @@
     green: '#3faf5a', gold: '#ffc94a', orange: '#ff8a3d'
   };
 
-  // ---------- 5x7 pixel font ----------
-  var FONT_SRC = {
-    '0': '01110 10001 10011 10101 11001 10001 01110', '1': '00100 01100 00100 00100 00100 00100 01110',
-    '2': '01110 10001 00001 00010 00100 01000 11111', '3': '11111 00010 00100 00010 00001 10001 01110',
-    '4': '00010 00110 01010 10010 11111 00010 00010', '5': '11111 10000 11110 00001 00001 10001 01110',
-    '6': '00110 01000 10000 11110 10001 10001 01110', '7': '11111 00001 00010 00100 01000 01000 01000',
-    '8': '01110 10001 10001 01110 10001 10001 01110', '9': '01110 10001 10001 01111 00001 00010 01100',
-    'A': '01110 10001 10001 11111 10001 10001 10001', 'B': '11110 10001 10001 11110 10001 10001 11110',
-    'C': '01110 10001 10000 10000 10000 10001 01110', 'D': '11100 10010 10001 10001 10001 10010 11100',
-    'E': '11111 10000 10000 11110 10000 10000 11111', 'F': '11111 10000 10000 11110 10000 10000 10000',
-    'G': '01110 10001 10000 10111 10001 10001 01111', 'H': '10001 10001 10001 11111 10001 10001 10001',
-    'I': '01110 00100 00100 00100 00100 00100 01110', 'J': '00111 00010 00010 00010 00010 10010 01100',
-    'K': '10001 10010 10100 11000 10100 10010 10001', 'L': '10000 10000 10000 10000 10000 10000 11111',
-    'M': '10001 11011 10101 10101 10001 10001 10001', 'N': '10001 10001 11001 10101 10011 10001 10001',
-    'O': '01110 10001 10001 10001 10001 10001 01110', 'P': '11110 10001 10001 11110 10000 10000 10000',
-    'Q': '01110 10001 10001 10001 10101 10010 01101', 'R': '11110 10001 10001 11110 10100 10010 10001',
-    'S': '01111 10000 10000 01110 00001 00001 11110', 'T': '11111 00100 00100 00100 00100 00100 00100',
-    'U': '10001 10001 10001 10001 10001 10001 01110', 'V': '10001 10001 10001 10001 10001 01010 00100',
-    'W': '10001 10001 10001 10101 10101 10101 01010', 'X': '10001 10001 01010 00100 01010 10001 10001',
-    'Y': '10001 10001 10001 01010 00100 00100 00100', 'Z': '11111 00001 00010 00100 01000 10000 11111',
-    ':': '00000 01100 01100 00000 01100 01100 00000', '!': '00100 00100 00100 00100 00100 00000 00100',
-    '?': '01110 10001 00001 00010 00100 00000 00100', '.': '00000 00000 00000 00000 00000 01100 01100',
-    '-': '00000 00000 00000 11111 00000 00000 00000', '/': '00000 00001 00010 00100 01000 10000 00000',
-    '%': '11001 11010 00010 00100 01000 01011 10011', ' ': '00000 00000 00000 00000 00000 00000 00000',
-    '_': '00000 00000 00000 00000 00000 00000 11111',
-    '@': '00000 01010 11111 11111 01110 00100 00000', // heart
-    '*': '00100 10101 01110 11111 01110 10101 00100'
-  };
-  var FONT = {};
-  Object.keys(FONT_SRC).forEach(function (k) {
-    FONT[k] = FONT_SRC[k].split(' ').map(function (r) { return parseInt(r, 2); });
-  });
-
   // ---------- canvas ----------
   var stage = document.getElementById('stage');
   var view = document.getElementById('screen');
@@ -51,6 +18,7 @@
   var buf = document.createElement('canvas');
   buf.width = W; buf.height = H;
   var ctx = buf.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
   var scale = 3, dpr = 1;
 
   // Scale in whole *device* pixels so every art pixel is the same size at any
@@ -74,18 +42,53 @@
 
   function rect(x, y, w, h, c) { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
 
-  function textWidth(s, k) { return s.length ? (s.length * 6 - 1) * (k || 1) : 0; }
-  function text(s, x, y, c, k) {
-    k = k || 1; s = String(s).toUpperCase();
-    ctx.fillStyle = c;
-    for (var i = 0; i < s.length; i++) {
-      var g = FONT[s[i]] || FONT['?'];
-      for (var r = 0; r < 7; r++) {
-        for (var b = 0; b < 5; b++) {
-          if (g[r] & (16 >> b)) ctx.fillRect(x + (i * 6 + b) * k, y + r * k, k, k);
-        }
+  // ---------- text: one pixel font (Galmuri9) for Korean + Latin ----------
+  // Drawn at its native 10px and alpha-thresholded, so every glyph pixel sits
+  // exactly on the same art-pixel grid as the tomato.
+  var FONT = '10px Galmuri9';
+  var TEXT_DY = 0, CAP = 7; // calibrated from the real glyphs once the font loads
+  var tcache = {}, tcount = 0;
+  function glyphs(str, c) {
+    var key = c + '|' + str;
+    if (tcache[key]) return tcache[key];
+    if (++tcount > 400) { tcache = {}; tcount = 0; }
+    var cv = document.createElement('canvas');
+    var g = cv.getContext('2d', { willReadFrequently: true });
+    g.font = FONT;
+    cv.width = Math.max(1, Math.ceil(g.measureText(str).width)); cv.height = 14;
+    g.font = FONT; g.textBaseline = 'top'; g.fillStyle = '#000';
+    g.fillText(str, 0, 0);
+    var img = g.getImageData(0, 0, cv.width, cv.height), d = img.data, rgb = Sprite.hex(c);
+    for (var i = 0; i < d.length; i += 4) {
+      var on = d[i + 3] >= 110;
+      d[i] = rgb[0]; d[i + 1] = rgb[1]; d[i + 2] = rgb[2]; d[i + 3] = on ? 255 : 0;
+    }
+    g.putImageData(img, 0, 0);
+    return (tcache[key] = cv);
+  }
+  function calibrate() {
+    var cv = glyphs('H', '#000000'), d = cv.getContext('2d').getImageData(0, 0, cv.width, cv.height).data;
+    var top = -1, bottom = -1;
+    for (var y = 0; y < cv.height; y++) {
+      for (var x = 0; x < cv.width; x++) {
+        if (d[(y * cv.width + x) * 4 + 3]) { if (top < 0) top = y; bottom = y; break; }
       }
     }
+    if (top >= 0) { TEXT_DY = -top; CAP = bottom - top + 1; }
+    tcache = {}; tcount = 0;
+  }
+  function textWidth(str, k) { str = String(str); return str ? (glyphs(str, '#000000').width - 1) * (k || 1) : 0; }
+  // (x, y) is the top-left of the capital letters, like a sprite
+  function text(str, x, y, c, k) {
+    str = String(str); k = k || 1;
+    if (!str) return;
+    var b = glyphs(str, c);
+    ctx.drawImage(b, Math.round(x), Math.round(y) + TEXT_DY * k, b.width * k, b.height * k);
+  }
+  function fit(str, maxW) {
+    if (textWidth(str) <= maxW) return str;
+    while (str.length > 1 && textWidth(str + '..') > maxW) str = str.slice(0, -1);
+    return str + '..';
   }
   function ctext(s, y, c, k) { text(s, Math.round((W - textWidth(String(s), k)) / 2), y, c, k); }
 
@@ -194,18 +197,12 @@
   }
 
   // ---------- goal text (HTML overlay, so Korean renders properly) ----------
-  var taskText = document.getElementById('taskText');
   var taskInput = document.getElementById('taskInput');
 
-  function renderTask() {
-    taskText.textContent = S.task || '오늘의 목표를 적어보세요';
-    taskText.classList.toggle('empty', !S.task);
-    taskText.classList.toggle('cleared', !!S.task && done());
-  }
   function editTask() {
     SFX.click();
     taskInput.value = S.task;
-    taskInput.hidden = false; taskText.hidden = true;
+    taskInput.hidden = false;
     taskInput.focus(); taskInput.select();
   }
   function closeTask(commit) {
@@ -215,8 +212,7 @@
       if (v && v !== S.task) { say('GOOD!', 1500); play([659, 988], 0.07); }
       S.task = v; save();
     }
-    taskInput.hidden = true; taskText.hidden = false;
-    renderTask();
+    taskInput.hidden = true;
   }
   taskInput.addEventListener('keydown', function (e) {
     e.stopPropagation();
@@ -263,7 +259,7 @@
       var date = document.createElement('b');
       date.textContent = r.d.slice(5).replace('-', '/') + ' · ' + r.h + 'H';
       li.appendChild(date);
-      li.appendChild(document.createTextNode(' ' + (r.task || '집중 완료') + (r.away ? ' · 딴짓 ' + r.away + '회' : ' · 딴짓 0회 👑')));
+      li.appendChild(document.createTextNode(' ' + (r.task || '집중 완료') + (r.away ? ' · 딴짓 ' + r.away + '회' : ' · 딴짓 0회 ★')));
       list.appendChild(li);
     });
     record.hidden = false;
@@ -333,7 +329,7 @@
     fx.confirmReset = 0; fx.flash = {}; fx.confetti = []; fx.clearAt = 0;
     applyFocus();
     lastPainted = 0;
-    save(); renderTask(); SFX.click(); say('HI!', 1500);
+    save(); SFX.click(); say('HI!', 1500);
   }
   function setGoal(h) {
     if (running() || (elapsed() > 0 && !done())) { say('LOCKED', 1200); SFX.click(); return; }
@@ -377,7 +373,7 @@
     // poke the tomato
     if (x >= 40 && x < 104 && y >= TOM_Y - 2 && y < TOM_Y + 64) {
       fx.jumpAt = Date.now(); play([1047, 1319], 0.05);
-      var pokes = ['@', 'HEHE', 'FOCUS!', 'YOU GOT IT', '*_*'];
+      var pokes = ['♥', 'HEHE', 'FOCUS!', 'YOU GOT IT', '*_*'];
       say(pokes[Math.floor(Math.random() * pokes.length)], 1200);
     }
   });
@@ -437,6 +433,11 @@
       rect(16, 21, 2, 2, C.red); rect(15, 22, 2, 2, C.gold); rect(14, 23, 2, 2, C.gold);
       rect(13, 24, 2, 2, C.gold); rect(12, 26, 2, 1, C.ink);
     }
+    if (!taskInput.hidden) return;
+    var label = fit(S.task || '오늘의 목표를 적어요', 110);
+    var col = !S.task ? C.soft : clear ? C.redD : C.ink;
+    text(label, 22, TASK_Y + Math.round((14 - CAP) / 2), col);
+    if (clear) rect(21, TASK_Y + Math.round((14 - CAP) / 2) + Math.floor(CAP / 2), textWidth(label) + 2, 1, C.redD);
   }
 
   function flame(x, y, on, now) {
@@ -450,7 +451,7 @@
   function drawStreak(now) {
     var n = streak(), today = !!S.days[dayKey(new Date())];
     flame(8, ROW_Y, n > 0, now);
-    text(n + 'D', 17, ROW_Y + 2, n > 0 ? C.ink : C.soft);
+    text(n + '일', 17, ROW_Y + 1, n > 0 ? C.ink : C.soft);
     // today's attendance dot
     if (!today) { rect(8, ROW_Y + 10, 7, 1, Math.floor(now / 500) % 2 ? C.red : C.bg); }
 
@@ -600,11 +601,11 @@
     else if (done()) msg = 'YAY!';
     else if (!running() && elapsed() === 0) msg = 'HI!';
     if (!msg) return;
-    var w = textWidth(msg) + 6, x = Math.min(W - w - 3, 96), y = TOM_Y - 6;
-    box(x, y, w, 11, C.cream, C.ink);
-    rect(x + 3, y + 10, 3, 1, C.cream); rect(x + 2, y + 11, 2, 1, C.ink); rect(x + 1, y + 12, 1, 1, C.ink);
-    rect(x + 4, y + 11, 1, 1, C.ink);
-    text(msg, x + 3, y + 2, C.ink);
+    var w = textWidth(msg) + 7, x = Math.min(W - w - 3, 96), y = TOM_Y - 8, bh = CAP + 4;
+    box(x, y, w, bh, C.cream, C.ink);
+    rect(x + 3, y + bh - 1, 3, 1, C.cream); rect(x + 2, y + bh, 2, 1, C.ink); rect(x + 1, y + bh + 1, 1, 1, C.ink);
+    rect(x + 4, y + bh, 1, 1, C.ink);
+    text(msg, x + 4, y + 2, C.ink);
   }
 
   function drawProgress() {
@@ -620,9 +621,9 @@
 
   function drawInfo() {
     var remain = S.goal * HOUR - elapsed();
-    ctext(fmt(remain), BAR_Y + 12, done() ? C.red : C.ink, 2);
+    ctext(fmt(remain), BAR_Y + 11, done() ? C.red : C.ink, 2);
     var p = Math.min(painted(), TOTAL);
-    ctext(p + '/' + TOTAL + ' PX  ' + Math.floor(100 * elapsed() / (S.goal * HOUR)) + '%', BAR_Y + 32, C.soft, 1);
+    ctext(p + '/' + TOTAL + ' PX  ' + Math.floor(100 * elapsed() / (S.goal * HOUR)) + '%', BAR_Y + 34, C.soft, 1);
   }
 
   function button(b, label, on, disabled, now) {
@@ -632,7 +633,7 @@
     if (disabled) { fg = C.soft; edge = C.soft; }
     if (pressed) box(b.x + 1, b.y + 1, b.w - 1, b.h - 1, fill, edge);
     else box(b.x, b.y, b.w, b.h, fill, edge);
-    text(label, b.x + dx + Math.round((b.w - textWidth(label)) / 2), b.y + dx + Math.round((b.h - 7) / 2), fg);
+    text(label, b.x + dx + Math.round((b.w - textWidth(label)) / 2), b.y + dx + Math.round((b.h - CAP) / 2), fg);
   }
 
   function drawButtons(now) {
@@ -691,7 +692,7 @@
       S.cleared = true;
       S.log.push({ d: dayKey(new Date()), h: S.goal, task: S.task, away: S.away });
       if (S.log.length > 200) S.log = S.log.slice(-200);
-      save(); renderTask();
+      save();
       SFX.clear(); burst(); fx.clearAt = now; fx.lastFw = -1;
       say('YAY!', 5000);
       notify('Bbomodoro', S.goal + '시간 완료! ' + (S.task ? '"' + S.task + '" ' : '') + '토마토가 다 익었어요 🍅');
@@ -731,7 +732,8 @@
       if (S.pin) Neutralino.window.setAlwaysOnTop(true);
     } catch (e) {}
   }
-  renderTask();
   applyFocus();
-  tick();
+  var boot = function () { calibrate(); tick(); };
+  if (document.fonts && document.fonts.load) document.fonts.load(FONT, '가A').then(boot, boot);
+  else boot();
 })();
