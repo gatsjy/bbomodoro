@@ -157,7 +157,11 @@ neutralino.config.json
 글꼴 저작권은 이민서(quiple)에게 있고 [SIL Open Font License 1.1](resources/fonts/Galmuri-OFL.md)로 배포돼요.
 
 ### 데이터 저장
-모든 데이터는 앱의 로컬 저장소(`localStorage`, 키 `bbomodoro.v1`)에 저장돼요.
+모든 데이터는 내 컴퓨터의 사용자 데이터 폴더에 저장돼요 (Neutralino storage, 키 `bbomodoro-v1`).
+- Windows: `%APPDATA%\com.bbomodoro.app\.storage`
+- macOS: `~/Library/Application Support/com.bbomodoro.app/.storage`
+
+앱 파일을 옮기거나 새 버전으로 바꿔도 기록이 유지돼요. 브라우저에서 `index.html`로 열었을 때만 `localStorage`를 써요.
 - `days`: 날짜별 완료한 시간 → 연속 출석과 달력의 기준
 - `log`: 달성한 목표 (최대 200개)
 - `goal`, `acc`, `startedAt`: 현재 타이머 상태
