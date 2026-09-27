@@ -1,6 +1,6 @@
 {
   "name": "bbomodoro",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Retro pixel tomato focus timer (1/2/3 hours)",
   "scripts": {
