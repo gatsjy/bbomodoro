@@ -119,14 +119,28 @@
   // ---------- state ----------
   // days: { 'YYYY-MM-DD': hours completed that day }  -> attendance / streak
   // log:  [{ d, h, task }]                             -> cleared goals
-  var KEY = 'bbomodoro.v1';
+  var KEY = 'bbomodoro.v1', NKEY = 'bbomodoro-v1'; // storage keys may not contain '.'
   var S = {
     goal: 1, acc: 0, startedAt: null, sound: true, pin: false,
     task: '', credited: 0, cleared: false, focus: true, away: 0,
     days: {}, best: 0, log: []
   };
+  // The desktop app is served from a random localhost port each launch, so its
+  // localStorage origin changes every run. Neutralino.storage (in the OS user
+  // data folder, see storageLocation) is the source of truth there; localStorage
+  // is only used when running as a plain web page.
   try { Object.assign(S, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  function save() {
+    var json = JSON.stringify(S);
+    if (NEU) { try { Neutralino.storage.setData(NKEY, json).catch(function () {}); } catch (e) {} return; }
+    try { localStorage.setItem(KEY, json); } catch (e) {}
+  }
+  function loadNative() {
+    if (!NEU) return Promise.resolve();
+    return Neutralino.storage.getData(NKEY).then(function (json) {
+      Object.assign(S, JSON.parse(json));
+    }, function () {}).catch(function () {});
+  }
 
   function elapsed() { return Math.min(S.acc + (S.startedAt ? Date.now() - S.startedAt : 0), S.goal * HOUR); }
   function running() { return S.startedAt !== null; }
@@ -726,14 +740,13 @@
   }
 
   // ---------- boot ----------
-  if (NEU) {
-    try {
-      Neutralino.init();
-      if (S.pin) Neutralino.window.setAlwaysOnTop(true);
-    } catch (e) {}
-  }
-  applyFocus();
-  var boot = function () { calibrate(); tick(); };
-  if (document.fonts && document.fonts.load) document.fonts.load(FONT, '가A').then(boot, boot);
-  else boot();
+  if (NEU) { try { Neutralino.init(); } catch (e) {} }
+  var fontReady = document.fonts && document.fonts.load ? document.fonts.load(FONT, '가A').catch(function () {}) : Promise.resolve();
+  Promise.all([fontReady, loadNative()]).then(function () {
+    lastPainted = painted();
+    if (NEU && S.pin) { try { Neutralino.window.setAlwaysOnTop(true); } catch (e) {} }
+    applyFocus();
+    calibrate();
+    tick();
+  });
 })();
